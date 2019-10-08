@@ -6,7 +6,7 @@ podTemplate(
   containers: [
     containerTemplate(
       name: "jnlp",
-      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
+      image: "docker-registry.default.svc:5000/9c94-jenkins/jenkins-agent-appdev",
       resourceRequestMemory: "1Gi",
       resourceLimitMemory: "2Gi",
       resourceRequestCpu: "1",
@@ -49,8 +49,8 @@ podTemplate(
       // Set the tag for the production image: version
       def prodTag = "${version}"
 
-      def devProject  = "${GUID}-tasks-dev"
-      def prodProject = "${GUID}-tasks-prod"
+      def devProject  = "9c94-tasks-dev"
+      def prodProject = "9c94-tasks-prod"
 
       // Using Maven build the war file
       stage('Build war') {
@@ -244,6 +244,6 @@ podTemplate(
 // Do not change anything below this line.
 // --------------------------------------------------------
 def getVersionFromPom(pom) {
-  def matcher = readFile(pom) =~ '<version>(.+)</version>'
-  matcher ? matcher[0][1] : null
+ def matcher = readFile(pom) =~ '<version>(.+)</version>'
+ matcher ? matcher[0][1] : null
 }
