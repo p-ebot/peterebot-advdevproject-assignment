@@ -24,8 +24,6 @@ podTemplate(
   def sonarQubeSvcRoute = "sonarqube.gpte-hw-cicd.svc.cluster.local:9000"
   def sonarQubePublicRoute = "http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
 
-  def projectGitUrl = "https://github.com/ox-prolifics/appdev.git"
-
   node('skopeo-pod') {
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
@@ -33,12 +31,9 @@ podTemplate(
 
     // Checkout Source Code.
     stage('Checkout Source') {
-      // Replace the credentials with your credentials.
-      // git url: "${projectGitUrl}"
-
-      // or when using the Pipeline from the repo itself:
-      checkout scm
+      checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '6ff03b8d-8a9a-42d4-afbf-1bf1e10d5e9a', url: 'https://github.com/p-ebot/advdev-homework.git']]])
     }
+
 
     // Build the Tasks Service
     dir('openshift-tasks') {
@@ -48,14 +43,12 @@ podTemplate(
       def devTag  = "${version}-${currentBuild.number}"
       // Set the tag for the production image: version
       def prodTag = "${version}"
-
       def devProject  = "9c94-tasks-dev"
       def prodProject = "9c94-tasks-prod"
 
       // Using Maven build the war file
       stage('Build war') {
         echo "Building version ${devTag}"
-
         // Execute Maven Build
         sh "${mvnCmd} clean package -DskipTests=true"
       }
